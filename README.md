@@ -5,7 +5,7 @@ API web em Kotlin + Spring Boot que valida senhas contra um conjunto de 7 regras
 retorna tanto um **veredicto booleano** quanto a **lista exata de regras violadas**.
 
 > **Desafio:** ver `README-INSTRUCTIONS.md` para o enunciado oficial.
-> **Diretrizes de código aplicadas:** ver `co-dev.md`.
+> **Diretrizes de código aplicadas em co-pilot/claude:** ver `agents/co-dev.md`.
 
 ## Sumário
 
