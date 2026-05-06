@@ -40,9 +40,9 @@ coletando o `violation` das regras que retornaram `false`.
 - 7 arquivos para algo que caberia em 30 linhas inline. Em código de produção
   com dezenas de regras isso compensa; em 7 regras é um leve over-engineering
   que se justifica pelo critério de avaliação do desafio.
-- A ordem das violações no response depende da ordem de injeção do Spring (que
-  segue a ordem dos pacotes/classes). Para uma API pública isso seria um
-  problema de contrato — endereçado caso necessário com um `@Order` explícito.
+- A ordem nativa das violações dependeria da ordem de injeção do Spring (que
+  segue a ordem dos pacotes/classes). Resolvido com `sortedBy { it.name }` no
+  validator e contratualizado em [Premissa 7](06-assumptions.md#premissa-7--ordem-das-violações-é-alfabética-e-estável-parte-do-contrato).
 
 ---
 
@@ -171,16 +171,23 @@ do domínio do projeto de referência. O contexto deste desafio é diferente: é
 projeto público, e replicar nomes/utilitários internos seria inadequado.
 
 **Decisão.** Usar `org.slf4j.LoggerFactory` quando logging for necessário.
-Atualmente nenhum log explícito foi adicionado — o validador é uma operação
-pura, e logs de framework (request/response) virão do próprio Spring se
-necessário.
+A camada `application/` (`ValidatePasswordService`) loga **uma linha por
+validação** — `INFO` com `valid=true/false` + `violatedRules=[...]` no caso
+inválido — declarando o logger em `companion object`. O domínio
+(`PasswordValidator` e regras) **não** loga, mantendo-se puro. Detalhes em
+[`docs/08-observability.md`](08-observability.md#logs).
 
 **Justificativa.** Adicionar uma `Logger` customizada exigiria cópia de uma
 abstração existente em outro lugar; SLF4J já cobre 100% das necessidades
-estruturadas via *MDC* + JSON encoder (Logback) sem código próprio.
+estruturadas via *MDC* + JSON encoder (Logback) sem código próprio. Logar
+no boundary da `application/` (e não no domínio nem no controller) compõe
+**uma única linha por request** com toda a informação útil — sem ruído.
 
-**Consequências positivas.** Zero dívida técnica; alinhamento com o padrão JVM.
+**Consequências positivas.** Zero dívida técnica; alinhamento com o padrão
+JVM. Granularidade no boundary evita logs duplicados ou conflitantes nas
+camadas superior/inferior.
 
-**Consequências negativas.** Quando logs forem necessários (em features
-futuras), surgirá a tentação de criar uma camada customizada. Documentar isso
-em `08-logging-and-observability.md` *quando* a necessidade surgir, não antes.
+**Consequências negativas.** Quando logs em outras camadas forem necessários
+(features futuras), surgirá a tentação de criar uma camada customizada.
+Documentar isso em [`08-observability.md`](08-observability.md) *quando* a
+necessidade surgir, não antes.

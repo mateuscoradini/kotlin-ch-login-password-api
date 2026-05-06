@@ -113,17 +113,26 @@ está bem-formado; é a senha que é ruim.
 
 ---
 
-## Premissa 7 — Ordem das violações no array não é parte do contrato
+## Premissa 7 — Ordem das violações é alfabética e estável (parte do contrato)
 
-A ordem em que as regras são executadas (e portanto a ordem dos códigos no
-array `violations`) depende da ordem de descoberta de beans pelo Spring.
+A ordem em que as regras são executadas pelo Spring depende da ordem de
+descoberta de beans, o que é frágil e não-determinístico para o cliente.
 
-**Interpretação assumida:** O cliente deve tratar `violations` como um *set*
-desordenado de códigos. Documentado no Swagger.
+**Interpretação assumida:** O `PasswordValidator` ordena
+`violations` **alfabeticamente** pelo nome do enum `RuleViolation` antes de
+devolver. A ordem é parte do contrato e está documentada no Swagger.
 
-**Por quê:** Forçar uma ordem específica acopla o response a uma decisão
-arquitetural mutável. Os testes de integração usam `hasItem(...)` (ordem
-livre) na maioria dos casos; só os testes de violação única usam `contains(...)`.
+**Por quê:** Forçar uma ordem estável protege contra **Hyrum's Law** —
+mesmo documentando "ordem não importa", clientes acabariam dependendo da
+ordem observada na prática. Uma refatoração que mudasse a ordem de
+descoberta dos beans quebraria esses clientes silenciosamente. Ordenação
+alfabética é determinística, custa O(n log n) sobre uma lista pequena
+(≤ 7 elementos) e é trivialmente verificável em testes.
 
-**Como tornar determinístico (se necessário um dia):** anotar cada regra com
-`@Order(N)` definindo a posição.
+**Por que alfabética e não semântica:** Ordem semântica
+(*"mostre `MIN_LENGTH` primeiro porque o usuário corrige isso primeiro"*)
+é decisão de UX que pertence ao frontend, não à API. A API garante
+**previsibilidade**; o frontend decide **prioridade visual**.
+
+**Coberto por:** `validate - should aggregate violations from every rule
+that is not satisfied in alphabetical order` (`PasswordValidatorTest`).

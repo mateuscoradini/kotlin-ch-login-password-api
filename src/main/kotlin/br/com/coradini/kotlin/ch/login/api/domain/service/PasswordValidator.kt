@@ -11,6 +11,7 @@ class PasswordValidator(private val rules: List<PasswordRule>) {
         val violations = rules
             .filterNot { it.isSatisfiedBy(password) }
             .map { it.violation }
+            .sortedBy { it.name }
         return ValidationResult(violations)
     }
 }

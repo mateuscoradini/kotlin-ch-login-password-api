@@ -1,11 +1,33 @@
 # Password Validator API
 
+[![CI](https://github.com/coradini/kotlin-ch-login/actions/workflows/ci.yml/badge.svg)](https://github.com/coradini/kotlin-ch-login/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.5-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+
 API web em Kotlin + Spring Boot que valida senhas contra um conjunto de 7 regras
 (comprimento mínimo, classes de caracteres, repetições e espaços em branco) e
 retorna tanto um **veredicto booleano** quanto a **lista exata de regras violadas**.
 
 > **Desafio:** ver `README-INSTRUCTIONS.md` para o enunciado oficial.
 > **Diretrizes de código aplicadas em co-pilot/claude:** ver `agents/co-dev.md`.
+
+## Quickstart
+
+```bash
+./gradlew bootRun &
+curl -X POST localhost:8080/api/v1/passwords/validate \
+  -H 'Content-Type: application/json' \
+  -d '{"password":"AbTp9!fok"}'
+# → {"valid":true,"violations":[]}
+```
+
+Ou com Docker:
+
+```bash
+docker build -t password-api .
+docker run --rm -p 8080:8080 password-api
+```
 
 ## Sumário
 

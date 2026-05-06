@@ -1,0 +1,28 @@
+# Build artifacts (gerados dentro do container)
+build/
+.gradle/
+out/
+
+# IDE / SO
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# VCS
+.git/
+.gitignore
+.gitattributes
+
+# Docs e arquivos não necessários no runtime
+docs/
+postman/
+agents/
+README.md
+LICENSE
+HELP.md
+*.md
+
+# CI
+.github/
+

@@ -89,7 +89,7 @@ class PasswordValidationControllerIntegrationTest {
         validatePassword("AbTp9 fok")
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.valid").value(false))
-            .andExpect(jsonPath("$.violations", org.hamcrest.Matchers.contains("NO_SPECIAL_CHARACTER", "CONTAINS_WHITESPACE")))
+            .andExpect(jsonPath("$.violations", org.hamcrest.Matchers.contains("CONTAINS_WHITESPACE", "NO_SPECIAL_CHARACTER")))
     }
 
     @Test
