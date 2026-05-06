@@ -10,7 +10,10 @@ API web em Kotlin + Spring Boot que valida senhas contra um conjunto de 7 regras
 retorna tanto um **veredicto booleano** quanto a **lista exata de regras violadas**.
 
 > **Desafio:** ver `README-INSTRUCTIONS.md` para o enunciado oficial.
-> **Diretrizes de código aplicadas em co-pilot/claude:** ver `agents/co-dev.md`.
+> **Desenvolvido com auxílio de Claude (Anthropic)** como par de programação,
+> sob as diretrizes versionadas em [`agents/co-dev.md`](agents/co-dev.md).
+> Decisões de arquitetura, design e trade-offs estão documentadas em
+> [`docs/02-design-decisions.md`](docs/02-design-decisions.md) (ADRs).
 
 ## Quickstart
 
@@ -98,6 +101,20 @@ curl -X POST http://localhost:8080/api/v1/passwords/validate \
 ```
 
 Detalhes completos do contrato em [`docs/04-api-contract.md`](docs/04-api-contract.md).
+
+### Coleção Postman
+
+Coleção pronta em [`postman/`](postman/) com 11 requests cobrindo os 8
+exemplos canônicos do enunciado, cenários de erro e o `/actuator/health`.
+Cada request tem `pm.test(...)` validando status + payload.
+
+![Coleção Postman da Password Validator API rodando contra ambiente local](docs/img-api-postman.png)
+
+```bash
+npm install -g newman
+newman run postman/kotlin-ch-login-password-api.postman_collection.json \
+  -e postman/env/local.postman_environment.json
+```
 
 ## Estrutura do projeto
 
